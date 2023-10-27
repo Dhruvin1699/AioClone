@@ -1,143 +1,8 @@
-// import 'package:flutter/material.dart';
-//
-// class FilterPage extends StatefulWidget {
-//   @override
-//   State<FilterPage> createState() => _FilterPageState();
-// }
-//
-// class _FilterPageState extends State<FilterPage> {
-//   List<bool> horizontalCheckboxValues = [false, false];
-//   List<bool> verticalCheckboxValues = [false, false, false, false, false, false];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: <Widget>[
-//           Container(
-//             height: 135,
-//             padding: EdgeInsets.all(8.0),
-//             decoration: BoxDecoration(
-//               gradient: LinearGradient(
-//                 begin: Alignment(0.00, -1.00),
-//                 end: Alignment(0, 1),
-//                 colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
-//               ),
-//             ),
-//             child: Column(
-//               children: <Widget>[
-//                 Padding(
-//                   padding: const EdgeInsets.only(top: 28.0),
-//                   child: Container(
-//                     height: 40,
-//                     child: Row(
-//                       children: <Widget>[
-//                         Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Image.asset(
-//                             'images/Group 29.png',
-//                             width: 150,
-//                             height: 50,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 Container(
-//                   padding: EdgeInsets.all(0),
-//                   child: Row(
-//                     children: <Widget>[
-//                       IconButton(
-//                         icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
-//                         onPressed: () {
-//                           // Handle back button press
-//                         },
-//                       ),
-//                       SizedBox(width: 10),
-//                       Text(
-//                         'Filter',
-//                         style: TextStyle(
-//                           color: Color(0xFF00517C),
-//                           fontSize: 22,
-//                           fontFamily: 'Source Sans Pro',
-//                           fontWeight: FontWeight.w700,
-//                           height: 0,
-//                         ),
-//                       ),
-//                       Spacer(),
-//                     ],
-//                   ),
-//                 ),
-//                 Row(
-//                   children: <Widget>[
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: <Widget>[
-//                         Text('Text 1', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//                         Text('Text 2', style: TextStyle(fontSize: 14, color: Colors.grey)),
-//                       ],
-//                     ),
-//                     Spacer(),
-//                     Expanded(
-//                       child: Column(
-//                         children: [
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: <Widget>[
-//                               Checkbox(
-//                                 value: horizontalCheckboxValues[0],
-//                                 onChanged: (value) {
-//                                   setState(() {
-//                                     horizontalCheckboxValues[0] = value ?? false;
-//                                   });
-//                                 },
-//                               ),
-//                               Checkbox(
-//                                 value: horizontalCheckboxValues[1],
-//                                 onChanged: (value) {
-//                                   setState(() {
-//                                     horizontalCheckboxValues[1] = value ?? false;
-//                                   });
-//                                 },
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(height: 10),
-//                           Column(
-//                             children: <Widget>[
-//                               for (int i = 0; i < 6; i++)
-//                                 Row(
-//                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                   children: <Widget>[
-//                                     Text('Filter Text ${i + 1}'),
-//                                     Checkbox(
-//                                       value: verticalCheckboxValues[i],
-//                                       onChanged: (value) {
-//                                         setState(() {
-//                                           verticalCheckboxValues[i] = value ?? false;
-//                                         });
-//                                       },
-//                                     ),
-//                                   ],
-//                                 ),
-//                             ],
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../../model/domain.dart';
+import '../../model/tech.dart';
 
 class FilterPage extends StatefulWidget {
   @override
@@ -145,28 +10,73 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  List<bool> horizontalCheckboxValues = [false, false];
-  List<bool> verticalCheckboxValues = [false, false, false, false, false, false, false, false, false, false];
-  List<String> checkboxTexts = [
-    'Filter Text 1',
-    'Filter Text 2',
-    'Filter Text 3',
-    'Filter Text 4',
-    'Filter Text 5',
-    'Filter Text 6',
-    'Filter Text 7',
-    'Filter Text 8',
-    'Filter Text 9',
-    'Filter Text 10',
-  ];
+  List<FilterItem> items = [];
+  String selectedFilter = 'Domains/industries';
+  List<String> item = ['Domains/industries', 'Technology/Tech Stack'];
 
-  List<bool> checkboxValues = List.generate(10, (index) => false);
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data when the screen initializes
+    _loadData();
+  }
+
+  static Future<List<DomainData>> fetchDomainItems() async {
+    final response = await http
+        .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      Domain domain = Domain.fromJson(data);
+      return domain.data ?? [];
+    } else {
+      throw Exception('Failed to load domain items');
+    }
+  }
+
+  static Future<List<TechData>> fetchTechStackItems() async {
+    final response = await http
+        .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/tech'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      Tech tech = Tech.fromJson(data);
+      return tech.data ?? [];
+    } else {
+      throw Exception('Failed to load tech stack items');
+    }
+  }
+
+  Future<void> _loadData() async {
+    try {
+      List<FilterItem> loadedItems = [];
+      if (selectedFilter == 'Domains/industries') {
+        List<DomainData> domainData = await fetchDomainItems();
+        loadedItems = domainData
+            .map((data) =>
+            FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
+            .toList();
+      } else {
+        List<TechData> techData = await fetchTechStackItems();
+        loadedItems = techData
+            .map((data) =>
+            FilterItem(id: data.id ?? '', title: data.techName ?? ''))
+            .toList();
+      }
+
+      setState(() {
+        items = loadedItems;
+      });
+    } catch (error) {
+      throw Exception('Failed to load data: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+
+        body: Column(children: <Widget>[
+          // Your filter options UI
+          // ...
           Container(
             height: 135,
             padding: EdgeInsets.all(8.0),
@@ -174,7 +84,10 @@ class _FilterPageState extends State<FilterPage> {
               gradient: LinearGradient(
                 begin: Alignment(0.00, -1.00),
                 end: Alignment(0, 1),
-                colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
+                colors: [
+                  Color(0xFFDEF8FF),
+                  Colors.white.withOpacity(0.9200000166893005)
+                ],
               ),
             ),
             child: Column(
@@ -202,7 +115,8 @@ class _FilterPageState extends State<FilterPage> {
                   child: Row(
                     children: <Widget>[
                       IconButton(
-                        icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
+                        icon: Container(
+                            width: 10, child: Icon(Icons.arrow_back_ios)),
                         onPressed: () {
                           // Handle back button press
                         },
@@ -218,84 +132,108 @@ class _FilterPageState extends State<FilterPage> {
                           height: 0,
                         ),
                       ),
-                      // Spacer(),
+                      Spacer(),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     // Filter out selected items
+                      //     List<String> selectedItemsList = items
+                      //         .where((item) => item.isSelected)
+                      //         .map((item) => item.title) // Extract titles as strings
+                      //         .toList();
+                      //
+                      //     // Close the filter page and pass the selectedItemsList back to the home screen
+                      //     Navigator.pop(context, selectedItemsList);
+                      //   },
+                      //   child: Text('Apply'),
+                      // ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Filter out selected items and extract their IDs
+                          List<String> selectedItemsIds = items
+                              .where((item) => item.isSelected)
+                              .map((item) => item.id) // Extract IDs as strings
+                              .toList();
+
+                          // Close the filter page and pass the selectedItemsIds back to the home screen
+                          Navigator.pop(context, selectedItemsIds);
+                        },
+                        child: Text('Apply'),
+                      ),
+
                     ],
                   ),
                 ),
-    ]),),
-                SizedBox(height: 20,),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20,right: 20),
-                    child: Row(
-                      children: <Widget>[
-                        // Left Content
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text('Domains/industries', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 40,),
-                            Text('Technology/Tech Stack', style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-
-                        // Spacer between left and right content
-SizedBox(width: 40,),
-
-                        // Right Content
-                        Expanded(
-                          child: Column(
-                            children: List.generate(
-                              10,
-                                  (index) => Container(
-                                    width: 410,
-                                height: 50,
-                                margin: EdgeInsets.only(bottom: 10),
-                                padding: EdgeInsets.only(left: 0,right:0,top: 5,bottom: 4),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey), // Add border to container
-                                  borderRadius: BorderRadius.circular(5), // Optional: for rounded corners
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Container(
-                                      width:30,
-                                      child: Checkbox(
-                                        value: checkboxValues[index],
-                                        onChanged: (value) {
-                                          setState(() {
-                                            checkboxValues[index] = value ?? false;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 115.0),
-                                      child: Container(
-                                        width: 60,
-                                         margin: EdgeInsets.all(1),
-                                        child: Text(checkboxTexts[index]),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Row(
+                children: <Widget>[
+                  // Left Sidebar
+                  Container(
+                    width: 200,
+                    height: double.infinity,
+                    child: ListView.builder(
+                      itemCount: item.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(item[index]),
+                          onTap: () {
+                            setState(() {
+                              selectedFilter = item[index];
+                              // Load data based on the selected filter
+                              _loadData();
+                            });
+                          },
+                          selected: selectedFilter == item[index],
+                        );
+                      },
                     ),
                   ),
-                ),
-                    ],
-                  ),
-                );
 
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        FilterItem item = items[index];
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFFECEFF1),
+                            border: Border.all(color: Color(0xFFECEFF1),), // Add border as needed
+                            borderRadius: BorderRadius.circular(8.0), // Add border radius as needed
+                          ),
+                          margin: EdgeInsets.all(8.0), // Add margin as needed
+                          child: ListTile(
+                            title: Text(item.title),
+                            trailing: Checkbox(
+                              value: item.isSelected,
+                              onChanged: (value) {
+                                setState(() {
+                                  item.isSelected = value ?? false;
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
 
-
-
-
-
+                  // Apply button
+                ],
+              ),
+            ),
+          )
+        ]));
   }
+}
+
+class FilterItem {
+  final String id;
+  final String title;
+  bool isSelected;
+
+  FilterItem({required this.id, required this.title, this.isSelected = false});
 }

@@ -1,662 +1,12 @@
-// // import 'package:flutter/material.dart';
-// //
-// // class HomeScreen extends StatefulWidget {
-// //   @override
-// //   State<HomeScreen> createState() => _HomeScreenState();
-// // }
-// // //
-// //
-// // class _HomeScreenState extends State<HomeScreen> {
-// //   final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-// //   final List<Map<String, dynamic>> gridData = [
-// //     {'imagePath': 'images/image1.jpg', 'itemName': 'Item 5'},
-// //     {'imagePath': 'images/image2.jpg', 'itemName': 'Item 2'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-// //     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 5'},
-// //     // Add more items as needed
-// //   ];
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     String selectedDropdownItem = dropdownItems.first;
-// //     return Scaffold(
-// //       body: ListView.builder(
-// //         itemCount: 1,
-// //         itemBuilder: (BuildContext context, int index) {
-// //           return Column(
-// //             children: <Widget>[
-// //               //
-// //               Container(
-// //                 height: 105, // Set your desired height
-// //                 padding: EdgeInsets.all(8.0),
-// //                 decoration: BoxDecoration(
-// //                   gradient: LinearGradient(
-// //                     begin: Alignment(0.00, -1.00),
-// //                     end: Alignment(0,1),
-// //                     colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
-// //                   ),
-// //                 ),
-// //                 child: Column(
-// //                   children: <Widget>[
-// //                     Container(
-// //                       height: 40,
-// //                       child: Row(
-// //                         children: <Widget>[
-// //                           Padding(
-// //                             padding: const EdgeInsets.all(8.0),
-// //                             child: Image.asset(
-// //                               'images/Group 29.png',
-// //                               width: 150,
-// //                               height: 50,
-// //                             ),
-// //                           ),
-// //                         ],
-// //                       ),
-// //                     ),
-// //                     Container(
-// //                       padding: EdgeInsets.all(0),
-// //                       child: Row(
-// //                         children: <Widget>[
-// //                           IconButton(
-// //                             icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
-// //                             onPressed: () {
-// //                               // Handle back button press
-// //                             },
-// //                           ),
-// //                           SizedBox(width: 10),
-// //                           Text(
-// //                             'Work/Portfolio',
-// //                             style: TextStyle(
-// //                               color: Color(0xFF00517C),
-// //                               fontSize: 22,
-// //                               fontFamily: 'Source Sans Pro',
-// //                               fontWeight: FontWeight.w700,
-// //                               height: 0,
-// //                             ),
-// //                           ),
-// //                           Spacer(),
-// //                           CustomDropdown(
-// //                             selectedItem: selectedDropdownItem,
-// //                             items: dropdownItems,
-// //                             onItemSelected: (String newItem) {
-// //                               selectedDropdownItem = newItem;
-// //                               print('Selected Item: $newItem');
-// //                             },
-// //                           ),
-// //                         ],
-// //                       ),
-// //                     ),
-// //
-// //                   ],
-// //                 ),
-// //               ),
-// //
-// //               SingleChildScrollView(
-// //                 child: GridView.builder(
-// //                   shrinkWrap: true,
-// //                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-// //                     crossAxisCount: 2,
-// //                     childAspectRatio: 1,
-// //                   ),
-// //                   itemCount: gridData.length,
-// //                   itemBuilder: (BuildContext context, int index) {
-// //                     return GridItem(
-// //                       imagePath: gridData[index]['imagePath'],
-// //                       itemName: gridData[index]['itemName'],
-// //                     );
-// //                   },
-// //                 ),
-// //               ),
-// //             ],
-// //           );
-// //         },
-// //       ),
-// //     );
-// //   }
-// // }
-// //
-// // class CustomDropdown extends StatelessWidget {
-// //   final String selectedItem;
-// //   final List<String> items;
-// //   final Function(String) onItemSelected;
-// //
-// //   CustomDropdown({
-// //     required this.selectedItem,
-// //     required this.items,
-// //     required this.onItemSelected,
-// //   });
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return PopupMenuButton<String>(
-// //       onSelected: (String value) {
-// //         onItemSelected(value);
-// //       },
-// //       itemBuilder: (BuildContext context) {
-// //         return items.map((String item) {
-// //           return PopupMenuItem<String>(
-// //             value: item,
-// //             child: Container(
-// //
-// //               padding: EdgeInsets.all(8.0), // Optional: Add padding to the container
-// //               child: Text(item),
-// //             ),
-// //           );
-// //         }).toList();
-// //       },
-// //       child: Padding(
-// //         padding: const EdgeInsets.all(8.0),
-// //         child: Container(
-// //           decoration: BoxDecoration(
-// //             border: Border.all(color: Color(0xFF00517C)),
-// //           ),
-// //           child: Row(
-// //             children: [
-// //               Text(
-// //                 selectedItem,
-// //                 style: TextStyle(color: Colors.blueGrey),
-// //               ),
-// //               SizedBox(width: 5),
-// //               Icon(
-// //                 Icons.arrow_drop_down,
-// //                 color: Colors.blueGrey,
-// //               ),
-// //             ],
-// //           ),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-// // class GridItem extends StatelessWidget {
-// //   final String imagePath;
-// //   final String itemName;
-// //
-// //   GridItem({required this.imagePath, required this.itemName});
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Container(
-// //       margin: EdgeInsets.all(8.0),
-// //       child: Column(
-// //         children: <Widget>[
-// //           Container(
-// //             width: 195, // Set your desired width
-// //             height: 195, // Set your desired height
-// //             decoration: BoxDecoration(
-// //               color: Colors.grey[200], // You can set your desired background color
-// //               borderRadius: BorderRadius.circular(10),
-// //               image: DecorationImage(
-// //                 image: AssetImage(imagePath),
-// //                 fit: BoxFit.cover,
-// //               ),
-// //             ),
-// //             child: Align(
-// //               alignment: Alignment.bottomCenter,
-// //               child: Padding(
-// //                 padding: const EdgeInsets.only(bottom: 8.0),
-// //                 child: Text(
-// //                   itemName,
-// //                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-// //                 ),
-// //               ),
-// //             ),
-// //           ),
-// //         ],
-// //       ),
-// //     );
-// //   }
-// // }
-// import 'package:flutter/material.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: HomeScreen(),
-//     );
-//   }
-// }
-//
-// class HomeScreen extends StatefulWidget {
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-//   final List<Map<String, dynamic>> gridData = [
-//     {'imagePath': 'images/image1.jpg', 'itemName': 'Item 5'},
-//     {'imagePath': 'images/image2.jpg', 'itemName': 'Item 2'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 5'},
-//     // Add more items as needed
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     String selectedDropdownItem = dropdownItems.first;
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.only(top:40),
-//         child: Column(
-//           children: <Widget>[
-//             Container(
-//               height: 105, // Set your desired height
-//               padding: EdgeInsets.all(8.0),
-//               decoration: BoxDecoration(
-//                 gradient: LinearGradient(
-//                   begin: Alignment(0.00, -1.00),
-//                   end: Alignment(0,1),
-//                   colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
-//                 ),
-//               ),
-//               child: Column(
-//                 children: <Widget>[
-//                   Container(
-//                     height: 40,
-//                     child: Row(
-//                       children: <Widget>[
-//                         Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Image.asset(
-//                             'images/Group 29.png',
-//                             width: 150,
-//                             height: 50,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                   Container(
-//                     padding: EdgeInsets.all(0),
-//                     child: Row(
-//                       children: <Widget>[
-//                         IconButton(
-//                           icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
-//                           onPressed: () {
-//                             // Handle back button press
-//                           },
-//                         ),
-//                         SizedBox(width: 10),
-//                         Text(
-//                           'Work/Portfolio',
-//                           style: TextStyle(
-//                             color: Color(0xFF00517C),
-//                             fontSize: 22,
-//                             fontFamily: 'Source Sans Pro',
-//                             fontWeight: FontWeight.w700,
-//                             height: 0,
-//                           ),
-//                         ),
-//                         Spacer(),
-//                         CustomDropdown(
-//                           selectedItem: selectedDropdownItem,
-//                           items: dropdownItems,
-//                           onItemSelected: (String newItem) {
-//                             selectedDropdownItem = newItem;
-//                             print('Selected Item: $newItem');
-//                           },
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             Expanded(
-//               child: GridView.builder(
-//                 shrinkWrap: true,
-//                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                   crossAxisCount: 2,
-//                   childAspectRatio: 1,
-//                 ),
-//                 itemCount: gridData.length,
-//                 itemBuilder: (BuildContext context, int index) {
-//                   return GridItem(
-//                     imagePath: gridData[index]['imagePath'],
-//                     itemName: gridData[index]['itemName'],
-//                   );
-//                 },
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class CustomDropdown extends StatelessWidget {
-//   final String selectedItem;
-//   final List<String> items;
-//   final Function(String) onItemSelected;
-//
-//   CustomDropdown({
-//     required this.selectedItem,
-//     required this.items,
-//     required this.onItemSelected,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopupMenuButton<String>(
-//       onSelected: (String value) {
-//         onItemSelected(value);
-//       },
-//       itemBuilder: (BuildContext context) {
-//         return items.map((String item) {
-//           return PopupMenuItem<String>(
-//             value: item,
-//             child: Container(
-//               padding: EdgeInsets.all(8.0), // Optional: Add padding to the container
-//               child: Text(item),
-//             ),
-//           );
-//         }).toList();
-//       },
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Container(
-//           decoration: BoxDecoration(
-//             border: Border.all(color: Color(0xFF00517C)),
-//           ),
-//           child: Row(
-//             children: [
-//               Text(
-//                 selectedItem,
-//                 style: TextStyle(color: Colors.blueGrey),
-//               ),
-//               SizedBox(width: 5),
-//               Icon(
-//                 Icons.arrow_drop_down,
-//                 color: Colors.blueGrey,
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class GridItem extends StatelessWidget {
-//   final String imagePath;
-//   final String itemName;
-//
-//   GridItem({required this.imagePath, required this.itemName});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: EdgeInsets.all(8.0),
-//       child: Column(
-//         children: <Widget>[
-//           Container(
-//             width: 195, // Set your desired width
-//             height: 195, // Set your desired height
-//             decoration: BoxDecoration(
-//               color: Colors.grey[200], // You can set your desired background color
-//               borderRadius: BorderRadius.circular(10),
-//               image: DecorationImage(
-//                 image: AssetImage(imagePath),
-//                 fit: BoxFit.cover,
-//               ),
-//             ),
-//             child: Align(
-//               alignment: Alignment.bottomCenter,
-//               child: Padding(
-//                 padding: const EdgeInsets.only(bottom: 8.0),
-//                 child: Text(
-//                   itemName,
-//                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-// import 'package:flutter/material.dart';
-//
-// class HomeScreen extends StatefulWidget {
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-// //
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-//   final List<Map<String, dynamic>> gridData = [
-//     {'imagePath': 'images/image1.jpg', 'itemName': 'Item 5'},
-//     {'imagePath': 'images/image2.jpg', 'itemName': 'Item 2'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 3'},
-//     {'imagePath': 'images/image3.jpg', 'itemName': 'Item 5'},
-//     // Add more items as needed
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     String selectedDropdownItem = dropdownItems.first;
-//     return Scaffold(
-//       body: ListView.builder(
-//         itemCount: 1,
-//         itemBuilder: (BuildContext context, int index) {
-//           return Column(
-//             children: <Widget>[
-//               //
-//               Container(
-//                 height: 105, // Set your desired height
-//                 padding: EdgeInsets.all(8.0),
-//                 decoration: BoxDecoration(
-//                   gradient: LinearGradient(
-//                     begin: Alignment(0.00, -1.00),
-//                     end: Alignment(0,1),
-//                     colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
-//                   ),
-//                 ),
-//                 child: Column(
-//                   children: <Widget>[
-//                     Container(
-//                       height: 40,
-//                       child: Row(
-//                         children: <Widget>[
-//                           Padding(
-//                             padding: const EdgeInsets.all(8.0),
-//                             child: Image.asset(
-//                               'images/Group 29.png',
-//                               width: 150,
-//                               height: 50,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                     Container(
-//                       padding: EdgeInsets.all(0),
-//                       child: Row(
-//                         children: <Widget>[
-//                           IconButton(
-//                             icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
-//                             onPressed: () {
-//                               // Handle back button press
-//                             },
-//                           ),
-//                           SizedBox(width: 10),
-//                           Text(
-//                             'Work/Portfolio',
-//                             style: TextStyle(
-//                               color: Color(0xFF00517C),
-//                               fontSize: 22,
-//                               fontFamily: 'Source Sans Pro',
-//                               fontWeight: FontWeight.w700,
-//                               height: 0,
-//                             ),
-//                           ),
-//                           Spacer(),
-//                           CustomDropdown(
-//                             selectedItem: selectedDropdownItem,
-//                             items: dropdownItems,
-//                             onItemSelected: (String newItem) {
-//                               selectedDropdownItem = newItem;
-//                               print('Selected Item: $newItem');
-//                             },
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//
-//                   ],
-//                 ),
-//               ),
-//
-//               SingleChildScrollView(
-//                 child: GridView.builder(
-//                   shrinkWrap: true,
-//                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                     crossAxisCount: 2,
-//                     childAspectRatio: 1,
-//                   ),
-//                   itemCount: gridData.length,
-//                   itemBuilder: (BuildContext context, int index) {
-//                     return GridItem(
-//                       imagePath: gridData[index]['imagePath'],
-//                       itemName: gridData[index]['itemName'],
-//                     );
-//                   },
-//                 ),
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-//
-// class CustomDropdown extends StatelessWidget {
-//   final String selectedItem;
-//   final List<String> items;
-//   final Function(String) onItemSelected;
-//
-//   CustomDropdown({
-//     required this.selectedItem,
-//     required this.items,
-//     required this.onItemSelected,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopupMenuButton<String>(
-//       onSelected: (String value) {
-//         onItemSelected(value);
-//       },
-//       itemBuilder: (BuildContext context) {
-//         return items.map((String item) {
-//           return PopupMenuItem<String>(
-//             value: item,
-//             child: Container(
-//
-//               padding: EdgeInsets.all(8.0), // Optional: Add padding to the container
-//               child: Text(item),
-//             ),
-//           );
-//         }).toList();
-//       },
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Container(
-//           decoration: BoxDecoration(
-//             border: Border.all(color: Color(0xFF00517C)),
-//           ),
-//           child: Row(
-//             children: [
-//               Text(
-//                 selectedItem,
-//                 style: TextStyle(color: Colors.blueGrey),
-//               ),
-//               SizedBox(width: 5),
-//               Icon(
-//                 Icons.arrow_drop_down,
-//                 color: Colors.blueGrey,
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-// class GridItem extends StatelessWidget {
-//   final String imagePath;
-//   final String itemName;
-//
-//   GridItem({required this.imagePath, required this.itemName});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: EdgeInsets.all(8.0),
-//       child: Column(
-//         children: <Widget>[
-//           Container(
-//             width: 195, // Set your desired width
-//             height: 195, // Set your desired height
-//             decoration: BoxDecoration(
-//               color: Colors.grey[200], // You can set your desired background color
-//               borderRadius: BorderRadius.circular(10),
-//               image: DecorationImage(
-//                 image: AssetImage(imagePath),
-//                 fit: BoxFit.cover,
-//               ),
-//             ),
-//             child: Align(
-//               alignment: Alignment.bottomCenter,
-//               child: Padding(
-//                 padding: const EdgeInsets.only(bottom: 8.0),
-//                 child: Text(
-//                   itemName,
-//                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'dart:convert';
 import 'package:aioaapbardemo/presentation/screen/portfoliodeatil.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../model/model.dart';
+import 'filter_screen.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -676,69 +26,78 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
-
-
-  List<Map<String, dynamic>> gridData = [];
+  final List<String> dropdownItems = ['Domains/Industries'];
+  List<String> selectedFilterIds = [];
+  List<Data> gridData = [];
 
   void initState() {
     super.initState();
-    fetchDataFromApi();
+    fetchDataFromApi(selectedFilterIds);
   }
 
-  // Future<void> fetchDataFromApi() async {
-  //   final response = await http.get(Uri.parse('https://api.tridhyatech.com/api/v1/portfolio/list'));
-  //   if (response.statusCode == 200) {
-  //     List<dynamic> responseData = json.decode(response.body)['data'];
-  //
-  //     setState(() {
-  //       gridData = responseData.map((item) {
-  //         var imagePath = item['ImageMapping'] != null && item['ImageMapping'].isNotEmpty
-  //             ? 'https://api.tridhyatech.com/${item['ImageMapping'][0]['PortfolioImage']}'
-  //             : ''; // Set a default empty string if ImageMapping is empty
-  //         return {
-  //           'imagePath': imagePath,
-  //           'itemName': item['ProjectName'],
-  //         };
-  //       }).toList();
-  //
-  //     }
-  //
-  //     );
-  //   } else {
-  //     throw Exception('Failed to load data from API');
-  //   }
-  // }
+  void _openDetailsPage(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            DetailsPage(apiData: gridData, initialPageIndex: index),
+      ),
+    );
+  }
 
-  Future<void> fetchDataFromApi() async {
-    final response = await http.get(Uri.parse('https://api.tridhyatech.com/api/v1/portfolio/list'));
-    if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body)['data'];
+  void _openFilterPage() async {
+    var selectedFilterIds = await Navigator.push<List<String>>(
+      context,
+      MaterialPageRoute(builder: (context) => FilterPage()),
+    );
 
+    // Handle selected filter IDs (selectedFilterIds is a List<String>)
+    if (selectedFilterIds != null && selectedFilterIds.isNotEmpty) {
+      // Update your state with selected filter IDs
       setState(() {
-        gridData = responseData.map((item) {
-          var imagePath = item['ImageMapping'] != null && item['ImageMapping'].isNotEmpty
-              ? 'https://api.tridhyatech.com/${item['ImageMapping'][0]['PortfolioImage']}'
-              : ''; // Set a default empty string if ImageMapping is empty
-          return {
-            'imagePath': imagePath,
-            'itemName': item['ProjectName'],
-            'apiData': item, // Include the entire item data for the DetailsPage
-          };
-        }).toList();
-      });
+        // Update the selectedFilterIds state variable
+        selectedFilterIds = selectedFilterIds;
 
-      // After setting gridData, navigate to DetailsPage with the first item's data
-      // if (gridData.isNotEmpty) {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => DetailsPage(apiData: gridData[0]['apiData']),
-      //     ),
-      //   );
-      // }
+        // Call fetchDataFromApi with selected filter IDs to update gridData
+        fetchDataFromApi(selectedFilterIds!);
+      });
+    }
+  }
+
+  Future<void> fetchDataFromApi(List<String> selectedFilterIds) async {
+    // Check if there are no selected filters
+    if (selectedFilterIds.isEmpty) {
+      // If no filters are selected, make API call without query parameters
+      String apiUrl = 'https://api.tridhyatech.com/api/v1/portfolio/list';
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final Autogenerated data = Autogenerated.fromJson(responseData);
+        setState(() {
+          gridData = data.data!;
+        });
+      } else {
+        throw Exception('Failed to load data from API');
+      }
     } else {
-      throw Exception('Failed to load data from API');
+      // If filters are selected, construct query parameters and make API call with filters
+      String queryParameters =
+          'domain_id=${selectedFilterIds[0]}&tech_id=${selectedFilterIds[1]}';
+      String apiUrl =
+          'https://api.tridhyatech.com/api/v1/portfolio/list?$queryParameters';
+
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final Autogenerated data = Autogenerated.fromJson(responseData);
+        setState(() {
+          gridData = data.data!;
+        });
+      } else {
+        throw Exception('Failed to load data from API');
+      }
     }
   }
 
@@ -746,20 +105,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     String selectedDropdownItem = dropdownItems.first;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top:40),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 105, // Set your desired height
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment(0.00, -1.00),
-                  end: Alignment(0,1),
-                  colors: [Color(0xFFDEF8FF), Colors.white.withOpacity(0.9200000166893005)],
-                ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 133, // Set your desired height
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment(0.00, -1.00),
+                end: Alignment(0, 1),
+                colors: [
+                  Color(0xFFDEF8FF),
+                  Colors.white.withOpacity(0.9200000166893005),
+                ],
               ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 29.0),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -782,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: <Widget>[
                         IconButton(
-                          icon: Container(width: 10, child: Icon(Icons.arrow_back_ios)),
+                          icon: Container(
+                              width: 10, child: Icon(Icons.arrow_back_ios)),
                           onPressed: () {
                             // Handle back button press
                           },
@@ -800,55 +163,79 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Spacer(),
                         CustomDropdown(
-                          selectedItem: selectedDropdownItem,
-                          items: dropdownItems,
-                          onItemSelected: (String newItem) {
-                            selectedDropdownItem = newItem;
-                            print('Selected Item: $newItem');
-                          },
-                        ),
+                            selectedItem: selectedDropdownItem,
+                            onTap: _openFilterPage),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            Expanded(
-              // child: GridView.builder(
-              //   shrinkWrap: true,
-              //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //     crossAxisCount: 2,
-              //     childAspectRatio: 1,
-              //   ),
-              //   itemCount: gridData.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return GridItem(
-              //       imagePath: gridData[index]['imagePath'],
-              //       itemName: gridData[index]['itemName'], apiData: {},
-              //     );
-              //   },
-              // ),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: gridData.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var currentItem = gridData[index];
-                    if (currentItem['apiData'] != null) {
-                      return GridItem(
-                        imagePath: currentItem['imagePath'],
-                        itemName: currentItem['itemName'],
-                        apiData: currentItem['apiData'],
-                      );
-                    } else {
-                      // Handle the case where apiData is null or invalid.
-                      return Container(); // or return an appropriate error widget
-                    }
+          ),
+          Expanded(
+            child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: gridData.length,
+              itemBuilder: (BuildContext context, int index) {
+                var currentItem = gridData[index];
+
+                var imagePath = currentItem.imageMapping != null &&
+                        currentItem.imageMapping!.isNotEmpty
+                    ? 'https://api.tridhyatech.com/${currentItem.imageMapping![0].portfolioImage}'
+                    : ''; // Set a default empty string if ImageMapping is empty
+
+                return GridItem(
+                  imagePath: imagePath,
+                  itemName: currentItem.projectName!,
+                  apiData: currentItem,
+                  currentIndex: index,
+                  onTap: () {
+                    _openDetailsPage(index);
                   },
-                )
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomDropdown extends StatelessWidget {
+  final String selectedItem;
+  final Function() onTap;
+
+  CustomDropdown({
+    required this.selectedItem,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 30,
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(color: Color(0xFF00517C)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              selectedItem,
+              style: TextStyle(color: Colors.blueGrey),
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: Colors.blueGrey,
             ),
           ],
         ),
@@ -857,83 +244,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class CustomDropdown extends StatelessWidget {
-  final String selectedItem;
-  final List<String> items;
-  final Function(String) onItemSelected;
+class GridItem extends StatelessWidget {
+  final String imagePath;
+  final String itemName;
+  final Data apiData;
+  final int currentIndex;
+  final Function() onTap; // Define the onTap parameter as a Function
 
-  CustomDropdown({
-    required this.selectedItem,
-    required this.items,
-    required this.onItemSelected,
+  GridItem({
+    required this.imagePath,
+    required this.itemName,
+    required this.apiData,
+    required this.currentIndex,
+    required this.onTap, // Add onTap parameter to the constructor
   });
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (String value) {
-        onItemSelected(value);
-      },
-      itemBuilder: (BuildContext context) {
-        return items.map((String item) {
-          return PopupMenuItem<String>(
-            value: item,
-            child: Container(
-              padding: EdgeInsets.all(8.0), // Optional: Add padding to the container
-              child: Text(item),
-            ),
-          );
-        }).toList();
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Color(0xFF00517C)),
-          ),
-          child: Row(
-            children: [
-              Text(
-                selectedItem,
-                style: TextStyle(color: Colors.blueGrey),
-              ),
-              SizedBox(width: 5),
-              Icon(
-                Icons.arrow_drop_down,
-                color: Colors.blueGrey,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-class GridItem extends StatelessWidget {
-  final String imagePath;
-  final String itemName;
-  final Map<String, dynamic> apiData;
-
-  GridItem({required this.imagePath, required this.itemName, required this.apiData});
-
-  @override
-  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailsPage(apiData: apiData),
-          ),
-        );
-      },
+      onTap: onTap, // Assign onTap function to GestureDetector's onTap
       child: Container(
         margin: EdgeInsets.all(5.0),
         child: Column(
           children: <Widget>[
             CachedNetworkImage(
               imageUrl: imagePath,
-              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+              placeholder: (context, url) =>
+                  Center(child: CircularProgressIndicator()),
               errorWidget: (context, url, error) => Icon(Icons.error),
               width: 185,
               height: 175,
