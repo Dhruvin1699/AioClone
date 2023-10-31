@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../../Data/database.dart';
+import '../../Data/domaindatabse.dart';
+import '../../Data/techdatabse.dart';
 import '../../model/domain.dart';
 import '../../model/tech.dart';
 
@@ -21,53 +25,130 @@ class _FilterPageState extends State<FilterPage> {
     _loadData();
   }
 
+  // static Future<List<DomainData>> fetchDomainItems() async {
+  //   final response = await http
+  //       .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
+  //   if (response.statusCode == 200) {
+  //     final Map<String, dynamic> data = json.decode(response.body);
+  //     Domain domain = Domain.fromJson(data);
+  //     return domain.data ?? [];
+  //   } else {
+  //     throw Exception('Failed to load domain items');
+  //   }
+  // }
   static Future<List<DomainData>> fetchDomainItems() async {
     final response = await http
         .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       Domain domain = Domain.fromJson(data);
+      await DomainDatabase.insertDomains(domain.data ?? []);
+      print('data:$domain.data');
       return domain.data ?? [];
     } else {
       throw Exception('Failed to load domain items');
     }
   }
-
+  // static Future<List<TechData>> fetchTechStackItems() async {
+  //   final response = await http
+  //       .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/tech'));
+  //   if (response.statusCode == 200) {
+  //     final Map<String, dynamic> data = json.decode(response.body);
+  //     Tech tech = Tech.fromJson(data);
+  //     return tech.data ?? [];
+  //   } else {
+  //     throw Exception('Failed to load tech stack items');
+  //   }
+  // }
   static Future<List<TechData>> fetchTechStackItems() async {
     final response = await http
         .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/tech'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       Tech tech = Tech.fromJson(data);
+      await TechDatabase.insertTechStack(tech.data ?? []);
       return tech.data ?? [];
     } else {
       throw Exception('Failed to load tech stack items');
     }
   }
 
+  // Future<void> _loadData() async {
+  //   try {
+  //     List<FilterItem> loadedItems = [];
+  //     if (selectedFilter == 'Domains/industries') {
+  //       List<DomainData> domainData = await fetchDomainItems();
+  //       loadedItems = domainData
+  //           .map((data) =>
+  //           FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
+  //           .toList();
+  //     } else {
+  //       List<TechData> techData = await fetchTechStackItems();
+  //       loadedItems = techData
+  //           .map((data) =>
+  //           FilterItem(id: data.id ?? '', title: data.techName ?? ''))
+  //           .toList();
+  //     }
+  //
+  //     setState(() {
+  //       items = loadedItems;
+  //     });
+  //   } catch (error) {
+  //     throw Exception('Failed to load data: $error');
+  //   }
+  // }
   Future<void> _loadData() async {
     try {
       List<FilterItem> loadedItems = [];
-      if (selectedFilter == 'Domains/industries') {
-        List<DomainData> domainData = await fetchDomainItems();
-        loadedItems = domainData
-            .map((data) =>
-            FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
-            .toList();
+
+      // Check for internet connectivity
+      var connectivityResult = await Connectivity().checkConnectivity();
+      bool isConnected = connectivityResult != ConnectivityResult.none;
+
+      if (isConnected) {
+        // Fetch data from API if there is an internet connection
+        if (selectedFilter == 'Domains/industries') {
+          List<DomainData> domainData = await fetchDomainItems();
+          loadedItems = domainData
+              .map((data) => FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
+              .toList();
+        } else {
+          List<TechData> techData = await fetchTechStackItems();
+          loadedItems = techData
+              .map((data) => FilterItem(id: data.id ?? '', title: data.techName ?? ''))
+              .toList();
+        }
       } else {
-        List<TechData> techData = await fetchTechStackItems();
-        loadedItems = techData
-            .map((data) =>
-            FilterItem(id: data.id ?? '', title: data.techName ?? ''))
-            .toList();
+        // Load data from local database if there is no internet connection
+        if (selectedFilter == 'Domains/industries') {
+          List<DomainData> domainData = await DomainDatabase.getDomains();
+          loadedItems = domainData
+              .map((data) => FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
+              .toList();
+        } else {
+          List<TechData> techData = await TechDatabase.getTechStack();
+          loadedItems = techData
+              .map((data) => FilterItem(id: data.id ?? '', title: data.techName ?? ''))
+              .toList();
+        }
       }
 
       setState(() {
         items = loadedItems;
       });
     } catch (error) {
-      throw Exception('Failed to load data: $error');
+      print('Error: $error');
+      // Handle error, show a snackbar or display an error message on UI
     }
+  }
+
+
+  Future<bool> checkInternetConnectivity() async {
+    // Implement your logic to check internet connectivity, you can use packages like connectivity
+    // For example:
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // return connectivityResult != ConnectivityResult.none;
+    return false; // For the sake of example, assuming there is always internet connectivity
   }
 
   @override
@@ -78,7 +159,7 @@ class _FilterPageState extends State<FilterPage> {
           // Your filter options UI
           // ...
           Container(
-            height: 135,
+
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(

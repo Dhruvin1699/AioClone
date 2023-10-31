@@ -3,11 +3,19 @@
 import 'package:aioaapbardemo/presentation/screen/filter_screen.dart';
 import 'package:aioaapbardemo/presentation/screen/portfoliodeatil.dart';
 import 'package:aioaapbardemo/presentation/screen/portfoliolisting.dart';
+import 'package:aioaapbardemo/presentation/screen/splash.dart';
 import 'package:flutter/material.dart';
 
+import 'Data/database.dart';
 import 'model/model.dart';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.instance.initializeDatabase();
+  runApp(MyApp());
+}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -16,7 +24,8 @@ class MyApp extends StatelessWidget {
 
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => HomeScreen(), // Task screen route
+        '/':(context) => SplashScreen(),
+        '/home': (context) => HomeScreen(), // Task screen route
         // '/details': (context) => DetailsPage(apiData: [], data: Data(),),
         '/details': (context) => DetailsPage(apiData: [], initialPageIndex: 0),
         '/tasks':(context) => FilterPage()// Home screen route

@@ -18,11 +18,13 @@ class _DetailsPageState extends State<DetailsPage> {
   late int _currentPageIndex;
   late String selectedPhoto;
   // String selectedPhoto = '';
+  late List<TechMapping> techMappingList;
   @override
   void initState() {
     super.initState();
     _currentPageIndex = widget.initialPageIndex;
     _pageController = PageController(initialPage: widget.initialPageIndex);
+    techMappingList = widget.apiData![_currentPageIndex].techMapping ?? [];
     // selectedPhoto = '';
     List<ImageMapping> imageMapping = widget.apiData![_currentPageIndex].imageMapping ?? [];
     if (imageMapping.isNotEmpty) {
@@ -66,13 +68,16 @@ class _DetailsPageState extends State<DetailsPage> {
 
 
   Widget _buildDetailsPage(Data data) {
-      String techName = data.techMapping?.isNotEmpty ?? false
-        ? data.techMapping!.map((techMap) => techMap.techName).join(', ')
-        : '';
+       String techName = data.techMapping?.isNotEmpty ?? false
+     ? data.techMapping!.map((techMap) => techMap.techName).join(', ')
+         : '';
+          print('techname:$techName');
     String domainName = data.domainName ?? '';
     String descriptionText = data.description ?? '';
     String projectName = data.projectName ?? '';
     List<ImageMapping> imageMapping = data.imageMapping ?? [];
+
+
     // String selectedPhoto = ''; // Initialize the selected photo URL
 
       // Set the initial selected photo if imageMapping is not empty
