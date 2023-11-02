@@ -131,8 +131,8 @@ class TechMapping {
 class ImageMapping {
   String? portfolioID;
   String? portfolioImage;
-
-  ImageMapping({this.portfolioID, this.portfolioImage});
+  String? localImagePath;
+  ImageMapping({this.portfolioID, this.portfolioImage,this.localImagePath});
 
   ImageMapping.fromJson(Map<String, dynamic> json) {
     portfolioID = json['PortfolioID'];

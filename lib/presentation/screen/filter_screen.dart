@@ -24,18 +24,14 @@ class _FilterPageState extends State<FilterPage> {
     // Fetch data when the screen initializes
     _loadData();
   }
+  Future<void> _resetFilterPage() async {
+    setState(() {
+      items.forEach((item) {
+        item.isSelected = true;
+      });
+    });
+  }
 
-  // static Future<List<DomainData>> fetchDomainItems() async {
-  //   final response = await http
-  //       .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
-  //   if (response.statusCode == 200) {
-  //     final Map<String, dynamic> data = json.decode(response.body);
-  //     Domain domain = Domain.fromJson(data);
-  //     return domain.data ?? [];
-  //   } else {
-  //     throw Exception('Failed to load domain items');
-  //   }
-  // }
   static Future<List<DomainData>> fetchDomainItems() async {
     final response = await http
         .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
@@ -49,17 +45,7 @@ class _FilterPageState extends State<FilterPage> {
       throw Exception('Failed to load domain items');
     }
   }
-  // static Future<List<TechData>> fetchTechStackItems() async {
-  //   final response = await http
-  //       .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/tech'));
-  //   if (response.statusCode == 200) {
-  //     final Map<String, dynamic> data = json.decode(response.body);
-  //     Tech tech = Tech.fromJson(data);
-  //     return tech.data ?? [];
-  //   } else {
-  //     throw Exception('Failed to load tech stack items');
-  //   }
-  // }
+
   static Future<List<TechData>> fetchTechStackItems() async {
     final response = await http
         .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/tech'));
@@ -73,30 +59,7 @@ class _FilterPageState extends State<FilterPage> {
     }
   }
 
-  // Future<void> _loadData() async {
-  //   try {
-  //     List<FilterItem> loadedItems = [];
-  //     if (selectedFilter == 'Domains/industries') {
-  //       List<DomainData> domainData = await fetchDomainItems();
-  //       loadedItems = domainData
-  //           .map((data) =>
-  //           FilterItem(id: data.id ?? '', title: data.domainName ?? ''))
-  //           .toList();
-  //     } else {
-  //       List<TechData> techData = await fetchTechStackItems();
-  //       loadedItems = techData
-  //           .map((data) =>
-  //           FilterItem(id: data.id ?? '', title: data.techName ?? ''))
-  //           .toList();
-  //     }
-  //
-  //     setState(() {
-  //       items = loadedItems;
-  //     });
-  //   } catch (error) {
-  //     throw Exception('Failed to load data: $error');
-  //   }
-  // }
+
   Future<void> _loadData() async {
     try {
       List<FilterItem> loadedItems = [];
@@ -214,21 +177,9 @@ class _FilterPageState extends State<FilterPage> {
                         ),
                       ),
                       Spacer(),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     // Filter out selected items
-                      //     List<String> selectedItemsList = items
-                      //         .where((item) => item.isSelected)
-                      //         .map((item) => item.title) // Extract titles as strings
-                      //         .toList();
-                      //
-                      //     // Close the filter page and pass the selectedItemsList back to the home screen
-                      //     Navigator.pop(context, selectedItemsList);
-                      //   },
-                      //   child: Text('Apply'),
-                      // ),
+
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Filter out selected items and extract their IDs
                           List<String> selectedItemsIds = items
                               .where((item) => item.isSelected)
@@ -237,6 +188,7 @@ class _FilterPageState extends State<FilterPage> {
 
                           // Close the filter page and pass the selectedItemsIds back to the home screen
                           Navigator.pop(context, selectedItemsIds);
+                          await _resetFilterPage();
                         },
                         child: Text('Apply'),
                       ),

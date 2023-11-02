@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../model/model.dart';
@@ -68,10 +70,13 @@ class _DetailsPageState extends State<DetailsPage> {
 
 
   Widget _buildDetailsPage(Data data) {
-       String techName = data.techMapping?.isNotEmpty ?? false
-     ? data.techMapping!.map((techMap) => techMap.techName).join(', ')
-         : '';
-          print('techname:$techName');
+    // String techName = data.techMapping?.isNotEmpty ?? false
+    //     ? data.techMapping!.map((techMap) => techMap.techName).join(', ')
+    //     : '';
+    String techName = techMappingList.isNotEmpty
+        ? techMappingList.map((techMap) => techMap.techName).join(', ')
+        : '';
+    print('techname:$techName');
     String domainName = data.domainName ?? '';
     String descriptionText = data.description ?? '';
     String projectName = data.projectName ?? '';
@@ -80,7 +85,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     // String selectedPhoto = ''; // Initialize the selected photo URL
 
-      // Set the initial selected photo if imageMapping is not empty
+    // Set the initial selected photo if imageMapping is not empty
 
     return SingleChildScrollView(
       child: Column(
@@ -90,7 +95,7 @@ class _DetailsPageState extends State<DetailsPage> {
           // ...
 
           Container(
-             // Set your desired height
+            // Set your desired height
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -155,14 +160,63 @@ class _DetailsPageState extends State<DetailsPage> {
             child: Container(
               width: double.infinity,
               height: 200, // Set your desired height for the selected photo
-              child: Image.network(
-                // imageMapping.isNotEmpty ? 'https://api.tridhyatech.com/${imageMapping[0].portfolioImage}' : '',
-                selectedPhoto,
-                fit: BoxFit.cover,
+              child: GestureDetector(
+                onTap: () {
+                  print('Selected photo tapped!');
+                  // Handle the tap event if needed
+                },
+                child: selectedPhoto.isNotEmpty && File(selectedPhoto).existsSync()
+                    ? Image.file(
+                  File(selectedPhoto),
+                  fit: BoxFit.cover,
+                )
+                    : Image.network(
+                  selectedPhoto,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      // Use a placeholder or loading indicator if needed
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    }
+                  },
+                  errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                    // If there's an error loading from the network, show the first image in the list if available
+                    if (imageMapping.isNotEmpty) {
+                      String firstImageUrl = 'https://api.tridhyatech.com/${imageMapping[0].portfolioImage}';
+                      String localImagePath = "/data/user/0/com.example.aioaapbardemo/app_flutter/${imageMapping[0].portfolioImage}";
+
+                      return localImagePath.isNotEmpty && File(localImagePath).existsSync()
+                          ? Image.file(
+                        File(localImagePath),
+                        fit: BoxFit.cover,
+                      )
+                          : Image.network(
+                        firstImageUrl,
+                        fit: BoxFit.cover,
+                      );
+                    } else {
+                      // Use a placeholder or default image if no images are available
+                      return Center(
+                        child: Icon(Icons.error),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
           ),
+
+
           SizedBox(height: 10),
+
           Padding(
             padding: const EdgeInsets.only(left: 0.0, right: 0),
             child: Container(
@@ -172,28 +226,39 @@ class _DetailsPageState extends State<DetailsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: imageMapping.map((imageData) {
                   String imageUrl = 'https://api.tridhyatech.com/${imageData.portfolioImage}';
+                  String localImagePath = "/data/user/0/com.example.aioaapbardemo/app_flutter/${imageData.portfolioImage}"; // Use the local path if available
+
                   return Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: GestureDetector(
                       onTap: () {
                         print('Image tapped!');
                         setState(() {
-                          selectedPhoto = imageUrl; // Update the selectedPhoto variable inside setState
+                          selectedPhoto = localImagePath.isNotEmpty && File(localImagePath).existsSync()
+                              ? localImagePath
+                              : imageUrl; // Update the selectedPhoto variable inside setState
                         });
                       },
-                      child: Image.network(
+                      child: localImagePath.isNotEmpty && File(localImagePath).existsSync()
+                          ? Image.file(
+                        File(localImagePath),
+                        width: 140,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                          : Image.network(
                         imageUrl,
                         width: 140,
                         height: 150,
                         fit: BoxFit.contain,
                       ),
                     ),
-
                   );
                 }).toList(),
               ),
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20),
             child: Column(
@@ -222,6 +287,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                 ),
+
                 SizedBox(height: 40),
                 Padding(
                   padding: const EdgeInsets.only(right: 76.0),
