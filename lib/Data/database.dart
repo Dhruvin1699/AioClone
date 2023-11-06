@@ -8,7 +8,7 @@ import '../model/model.dart';
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
   static Database? _database;
-
+  bool isDataLoaded = false;
   DatabaseHelper._privateConstructor();
 
   Future<Database> get database async {
@@ -17,6 +17,13 @@ class DatabaseHelper {
     _database = await _initDatabase();
     return _database!;
   }
+
+  Future<void> initializeDatabaseAndLoadData() async {
+    _database = await _initDatabase();
+    await loadDataFromDatabase(); // Load data on initialization
+    isDataLoaded = true;
+  }
+
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'your_database_name.db');
@@ -109,6 +116,7 @@ class DatabaseHelper {
 
 
   Future<List<Data>> loadDataFromDatabase() async {
+
     List<Map<String, dynamic>> rows = await getAllGridItems();
     List<Data> dataList = rows.map((row) {
       // Parse techMapping from JSON string

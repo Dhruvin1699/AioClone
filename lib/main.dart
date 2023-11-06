@@ -12,7 +12,8 @@ import 'model/model.dart';
 // void main() => runApp(MyApp());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.instance.initializeDatabase();
+  await DatabaseHelper.instance.initializeDatabaseAndLoadData();
+
   runApp(MyApp());
 }
 

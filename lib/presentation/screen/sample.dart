@@ -1299,3 +1299,59 @@ class FilterItem {
 
   FilterItem({required this.id, required this.title, this.isSelected = false});
 }
+//
+//
+// class GridItem extends StatelessWidget {
+//   final String imagePath;
+//   final String itemName;
+//   final Data? apiData;
+//   final int currentIndex;
+//   final Function() onTap;
+//
+//   GridItem({
+//     required this.imagePath,
+//     required this.itemName,
+//     required this.apiData,
+//     required this.currentIndex,
+//     required this.onTap,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: onTap,
+//       child: Container(
+//
+//         margin: EdgeInsets.all(5.0),
+//         child: Column(
+//           children: <Widget>[
+//             apiData != null && apiData!.imageMapping != null && apiData!.imageMapping!.isNotEmpty
+//                 ? CachedNetworkImage(
+//               imageUrl: imagePath,
+//               placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+//               errorWidget: (context, url, error) => Icon(Icons.error),
+//               width: 185,
+//               height: 175,
+//               fit: BoxFit.fitWidth,
+//             )
+//                 : Container(
+//               width: 185,
+//               height: 175,
+//               color: Colors.red,
+//             ),
+//             Align(
+//               alignment: Alignment.bottomCenter,
+//               child: Padding(
+//                 padding: const EdgeInsets.only(bottom: 8.0),
+//                 child: Text(
+//                   itemName,
+//                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

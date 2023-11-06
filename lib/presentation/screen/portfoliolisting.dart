@@ -1,20 +1,20 @@
 
-
-
 ///databse
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:aioaapbardemo/presentation/screen/portfoliodeatil.dart';
+import 'package:aioaapbardemo/presentation/screen/syn.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-
+import 'api_service.dart';
 import '../../Data/database.dart';
 import '../../model/model.dart';
 import 'filter_screen.dart';
@@ -38,18 +38,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final PagingController<int, Data> _pagingController = PagingController(firstPageKey: 1);
   final List<String> dropdownItems = ['Domains/Industries'];
   List<String> selectedFilterIds = [];
   List<Data> gridData = [];
   DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   bool isDataLoaded = false;
-  // void initState() {
-  //   super.initState();
-  //   // loadGridItemsFromDatabase();
-  //    fetchDataFromApi(selectedFilterIds);
-  //
-  //
-  // }
+  int pageKey = 1;
   void initState() {
     super.initState();
     checkInternetConnection();
@@ -59,6 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
       fetchDataFromApi(selectedFilterIds);
     });
   }
+
+
+
+  // void initState() {
+  //   super.initState();
+  //   _pagingController.addPageRequestListener((pageKey) {
+  //     fetchDataFromApi(selectedFilterIds);
+  //   });
+  //   checkInternetConnection();
+  //   loadGridItemsFromDatabase().then((_) {
+  //     _pagingController.refresh();
+  //   });
+  // }
   Future<void> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
@@ -118,41 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
   //
-  // Future<void> _downloadAndSaveImage(Data item) async {
-  //   var firstImageMapping = item.imageMapping?.isNotEmpty == true ? item.imageMapping![0] : null;
-  //
-  //   if (firstImageMapping == null) {
-  //     // No images in the list, handle accordingly
-  //     return;
-  //   }
-  //
-  //   String imageUrl = 'https://api.tridhyatech.com/${firstImageMapping.portfolioImage}';
-  //   String directory = (await getApplicationDocumentsDirectory()).path;
-  //   String imagePath = path.join(directory, firstImageMapping.portfolioImage);
-  //
-  //   if (File(imagePath).existsSync()) {
-  //     // Image already exists locally, use the local path
-  //     firstImageMapping.localImagePath = imagePath;
-  //   } else {
-  //     // Check if the app is offline before making an HTTP request
-  //     var connectivityResult = await Connectivity().checkConnectivity();
-  //     if (connectivityResult == ConnectivityResult.none) {
-  //       // App is offline, use a placeholder or handle accordingly
-  //       // For example, you can set localImagePath to null or an empty string
-  //       firstImageMapping.localImagePath = null;
-  //     } else {
-  //       // App is online, download and save the image
-  //       http.Response response = await http.get(Uri.parse(imageUrl));
-  //       Uint8List bytes = response.bodyBytes;
-  //
-  //       print('Image URL: $imageUrl');
-  //       print('Saving image to: $imagePath');
-  //
-  //       await File(imagePath).writeAsBytes(bytes);
-  //       firstImageMapping.localImagePath = imagePath;
-  //     }
-  //   }
-  // }
+
   Future<void> _downloadAndSaveImage(Data item) async {
     for (var imageMapping in item.imageMapping!) {
       String imageUrl = 'https://api.tridhyatech.com/${imageMapping.portfolioImage}';
@@ -237,7 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
       // Check if there are no selected filters
       if (selectedFilterIds.isEmpty) {
         // If no filters are selected, make API call without query parameters
-        String apiUrl = 'https://api.tridhyatech.com/api/v1/portfolio/list';
+         String apiUrl = 'https://api.tridhyatech.com/api/v1/portfolio/list-mobile';
+
         final response = await http.get(Uri.parse(apiUrl));
 
         if (response.statusCode == 200) {
@@ -337,6 +312,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     String selectedDropdownItem = dropdownItems.first;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the synchronization screen
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => SyncScreen()),
+          // );
+        },
+        child: Icon(Icons.sync),
+      ),
       body: Column(
         children: <Widget>[
           Container(
@@ -416,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 var currentItem = gridData[index];
 
                 var imagePath = currentItem.imageMapping != null &&
-                        currentItem.imageMapping!.isNotEmpty
+                    currentItem.imageMapping!.isNotEmpty
                     ? 'https://api.tridhyatech.com/${currentItem.imageMapping![0].portfolioImage}'
                     : ''; // Set a default empty string if ImageMapping is empty
 
@@ -477,61 +462,7 @@ class CustomDropdown extends StatelessWidget {
   }
 }
 
-//
-// class GridItem extends StatelessWidget {
-//   final String imagePath;
-//   final String itemName;
-//   final Data? apiData;
-//   final int currentIndex;
-//   final Function() onTap;
-//
-//   GridItem({
-//     required this.imagePath,
-//     required this.itemName,
-//     required this.apiData,
-//     required this.currentIndex,
-//     required this.onTap,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: onTap,
-//       child: Container(
-//
-//         margin: EdgeInsets.all(5.0),
-//         child: Column(
-//           children: <Widget>[
-//             apiData != null && apiData!.imageMapping != null && apiData!.imageMapping!.isNotEmpty
-//                 ? CachedNetworkImage(
-//               imageUrl: imagePath,
-//               placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-//               errorWidget: (context, url, error) => Icon(Icons.error),
-//               width: 185,
-//               height: 175,
-//               fit: BoxFit.fitWidth,
-//             )
-//                 : Container(
-//               width: 185,
-//               height: 175,
-//               color: Colors.red,
-//             ),
-//             Align(
-//               alignment: Alignment.bottomCenter,
-//               child: Padding(
-//                 padding: const EdgeInsets.only(bottom: 8.0),
-//                 child: Text(
-//                   itemName,
-//                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+
 class GridItem extends StatelessWidget {
   final String imagePath;
   final String itemName;
@@ -559,7 +490,7 @@ class GridItem extends StatelessWidget {
             apiData != null &&
                 apiData!.imageMapping != null &&
                 apiData!.imageMapping!.isNotEmpty
-        ? buildImage(apiData!.imageMapping![0])
+                ? buildImage(apiData!.imageMapping![0])
 
                 : Container(
               width: 185,
@@ -601,10 +532,12 @@ class GridItem extends StatelessWidget {
         : CachedNetworkImage(
       imageUrl: imagePath,
       placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-       errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => Icon(Icons.error),
       width: 185,
       height: 175,
       fit: BoxFit.fitWidth,
     );
   }
 }
+
+

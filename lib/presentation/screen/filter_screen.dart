@@ -23,14 +23,10 @@ class _FilterPageState extends State<FilterPage> {
     super.initState();
     // Fetch data when the screen initializes
     _loadData();
+
   }
-  Future<void> _resetFilterPage() async {
-    setState(() {
-      items.forEach((item) {
-        item.isSelected = true;
-      });
-    });
-  }
+
+
 
   static Future<List<DomainData>> fetchDomainItems() async {
     final response = await http
@@ -99,6 +95,13 @@ class _FilterPageState extends State<FilterPage> {
       setState(() {
         items = loadedItems;
       });
+      // setState(() {
+      //   items = loadedItems.map((item) {
+      //     // Update isSelected based on selectedFilterIds
+      //     item.isSelected = selectedFilterIds.contains(item.id);
+      //     return item;
+      //   }).toList();
+      // });
     } catch (error) {
       print('Error: $error');
       // Handle error, show a snackbar or display an error message on UI
@@ -188,7 +191,7 @@ class _FilterPageState extends State<FilterPage> {
 
                           // Close the filter page and pass the selectedItemsIds back to the home screen
                           Navigator.pop(context, selectedItemsIds);
-                          await _resetFilterPage();
+
                         },
                         child: Text('Apply'),
                       ),
