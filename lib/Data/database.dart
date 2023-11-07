@@ -51,6 +51,31 @@ class DatabaseHelper {
     )
   ''');
   }
+  // Future<void> saveDataToDatabase(Data data) async {
+  //   String techMappingJson = json.encode(data.techMapping);
+  //   String imageMappingJson = json.encode(data.imageMapping);
+  //
+  //   String? localImagePath = data.imageMapping != null && data.imageMapping!.isNotEmpty
+  //       ? data.imageMapping![0].localImagePath
+  //       : null;
+  //
+  //   Map<String, dynamic> row = {
+  //     'projectName': data.projectName,
+  //     'techMapping': techMappingJson,
+  //     'imageMapping': imageMappingJson,
+  //     'domainName': data.domainName,
+  //     'description': data.description,
+  //     'domainID': data.domainID,
+  //     'techID': (data.techMapping != null && data.techMapping!.isNotEmpty)
+  //         ? data.techMapping![0].techID
+  //         : null,
+  //     'localImagePath': localImagePath,
+  //   };
+  //
+  //   Database db = await instance.database;
+  //   await db.insert('gridItems', row,
+  //       conflictAlgorithm: ConflictAlgorithm.replace);
+  // }
 
   Future<void> saveDataToDatabase(Data data) async {
     // Convert techMapping list to JSON string

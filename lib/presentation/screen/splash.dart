@@ -1,4 +1,5 @@
 import 'package:aioaapbardemo/presentation/screen/portfoliolisting.dart';
+import 'package:aioaapbardemo/presentation/screen/syn.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,7 +15,7 @@ class SplashScreen extends StatelessWidget {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) {
           // Replace 'NextScreen' with the screen you want to navigate to.
-          return HomeScreen();
+          return SynchronizationScreen();
         }),
       );
     });
