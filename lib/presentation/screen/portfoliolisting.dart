@@ -1,5 +1,4 @@
 
-///databse
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -19,24 +18,25 @@ import '../../Data/database.dart';
 import '../../model/model.dart';
 import 'filter_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomeScreen(),
-    );
-  }
-}
-
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: HomeScreen(),
+//     );
+//   }
+// }
+//
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+//
 class _HomeScreenState extends State<HomeScreen> {
   final PagingController<int, Data> _pagingController = PagingController(firstPageKey: 1);
   final List<String> dropdownItems = ['Domains/Industries'];
@@ -44,7 +44,26 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Data> gridData = [];
   DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   bool isDataLoaded = false;
-  int pageKey = 1;
+  // void initState() {
+  //   super.initState();
+  //   checkInternetConnection();
+  //
+  //   // Listen for page requests from the paging controller
+  //   _pagingController.addPageRequestListener((pageKey) {
+  //     // Call fetchPage to load data for the requested page
+  //     fetchPage(pageKey, limit: 10);
+  //   });
+  //
+  //   // Load data from the local database first
+  //   loadGridItemsFromDatabase().then((_) {
+  //     // Once local data is loaded, fetch data from the API (if no filters are selected)
+  //     if (selectedFilterIds.isEmpty) {
+  //       _pagingController.addPageRequestListener((pageKey) {
+  //         fetchPage(pageKey, limit: 10);
+  //       });
+  //     }
+  //   });
+  // }
   void initState() {
     super.initState();
     checkInternetConnection();
@@ -54,10 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
       fetchDataFromApi(selectedFilterIds);
     });
   }
-
-
-
-
   // }
   Future<void> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -66,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await loadGridItemsFromDatabase();
     }
   }
+
   void _openDetailsPage(int index) {
     Navigator.push(
       context,
@@ -76,9 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
-   Future<void> loadGridItemsFromDatabase() async {
+  Future<void> loadGridItemsFromDatabase() async {
     if (isDataLoaded) {
       // Data is already loaded, do not reload
       return;
@@ -91,9 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     for (var row in rows) {
       List<TechMapping> techMappingList =
-      (json.decode(row['techMapping']) as List<dynamic>)
-          .map((dynamic item) => TechMapping.fromJson(item))
-          .toList();
+          (json.decode(row['techMapping']) as List<dynamic>)
+              .map((dynamic item) => TechMapping.fromJson(item))
+              .toList();
 
       var currentItem = Data(
         projectName: row['projectName'],
@@ -103,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
         techMapping: techMappingList,
         domainName: row['domainName'],
         description: row['description'],
-        formattedTechMapping: _databaseHelper.formatTechMapping(techMappingList),
+        formattedTechMapping:
+            _databaseHelper.formatTechMapping(techMappingList),
         urlLink: row['urlLink'],
         domainID: row['domainID'],
       );
@@ -118,8 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
   //
-
-
 
   Future<void> _setLocalPathsForImages(Data item) async {
     for (var imageMapping in item.imageMapping!) {
@@ -136,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
   }
+
   void _openFilterPage() async {
     var selectedFilterIds = await Navigator.push<List<String>>(
       context,
@@ -155,7 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   Future<void> checkImageStorageLocation(Data item) async {
     for (var imageMapping in item.imageMapping!) {
       String directory = (await getApplicationDocumentsDirectory()).path;
@@ -169,14 +182,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   Future<void> fetchDataFromApi(List<String> selectedFilterIds) async {
     try {
       // Check if there are no selected filters
       if (selectedFilterIds.isEmpty) {
         // If no filters are selected, make API call without query parameters
         String apiUrl = 'https://api.tridhyatech.com/api/v1/portfolio/list-mobile';
-
+        print('Calling API: $apiUrl'); // Print API call
         final response = await http.get(Uri.parse(apiUrl));
 
         if (response.statusCode == 200) {
@@ -189,15 +201,15 @@ class _HomeScreenState extends State<HomeScreen> {
           throw Exception('Failed to load data from API');
         }
 
-    } else {
-      // If filters are selected, fetch data from the local database by domain ID and tech ID
+     } else {
+  //     // If filters are selected, fetch data from the local database by domain ID and tech ID
       List<Data> filteredData =
       await _databaseHelper.fetchDataByDomainAndTechID(selectedFilterIds[0], selectedFilterIds[1]);
 
       setState(() {
         gridData = filteredData;
       });
-
+      print('Loaded filtered data from database: $filteredData');
       // If the local database doesn't have the data, fetch from API and update the local database
       if (filteredData.isEmpty) {
         String queryParameters = 'domain_id=${selectedFilterIds[0]}&tech_id=${selectedFilterIds[1]}';
@@ -241,14 +253,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   }
 
+
+
+
+
   @override
   void dispose() {
     super.dispose();
   }
 
-
   @override
-
   Widget build(BuildContext context) {
     String selectedDropdownItem = dropdownItems.first;
     return Scaffold(
@@ -341,13 +355,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 var currentItem = gridData[index];
 
                 var imagePath = currentItem.imageMapping != null &&
-                    currentItem.imageMapping!.isNotEmpty
+                        currentItem.imageMapping!.isNotEmpty
                     ? 'https://api.tridhyatech.com/${currentItem.imageMapping![0].portfolioImage}'
                     : ''; // Set a default empty string if ImageMapping is empty
 
                 return GridItem(
                   imagePath: imagePath,
-                  itemName: currentItem.projectName??" ",
+                  itemName: currentItem.projectName ?? " ",
                   apiData: currentItem,
                   currentIndex: index,
                   onTap: () {
@@ -357,7 +371,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-
         ],
       ),
     );
@@ -402,7 +415,6 @@ class CustomDropdown extends StatelessWidget {
   }
 }
 
-
 class GridItem extends StatelessWidget {
   final String imagePath;
   final String itemName;
@@ -428,15 +440,14 @@ class GridItem extends StatelessWidget {
         child: Column(
           children: <Widget>[
             apiData != null &&
-                apiData!.imageMapping != null &&
-                apiData!.imageMapping!.isNotEmpty
+                    apiData!.imageMapping != null &&
+                    apiData!.imageMapping!.isNotEmpty
                 ? buildImage(apiData!.imageMapping![0])
-
                 : Container(
-              width: 185,
-              height: 175,
-              color: Colors.red,
-            ),
+                    width: 185,
+                    height: 175,
+                    color: Colors.red,
+                  ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -454,24 +465,23 @@ class GridItem extends StatelessWidget {
   }
 
   Widget buildImage(ImageMapping imageMapping) {
-    String localImagePath = "/data/user/0/com.example.aioaapbardemo/app_flutter/${imageMapping.portfolioImage}"; // Use the local path if available
+    String localImagePath =
+        "/data/user/0/com.example.aioaapbardemo/app_flutter/${imageMapping.portfolioImage}"; // Use the local path if available
     return localImagePath.isNotEmpty && File(localImagePath).existsSync()
         ? Image.file(
-      File(localImagePath),
-      width: 185,
-      height: 175,
-      fit: BoxFit.fitWidth,
-    )
-
+            File(localImagePath),
+            width: 185,
+            height: 175,
+            fit: BoxFit.fitWidth,
+          )
         : CachedNetworkImage(
-      imageUrl: imagePath,
-      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-      width: 185,
-      height: 175,
-      fit: BoxFit.fitWidth,
-    );
+            imageUrl: imagePath,
+            placeholder: (context, url) =>
+                Center(child: CircularProgressIndicator()),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            width: 185,
+            height: 175,
+            fit: BoxFit.fitWidth,
+          );
   }
 }
-
-

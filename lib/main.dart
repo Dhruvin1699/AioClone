@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/':(context) => SplashScreen(),
-        '/syn':(context) => SynchronizationScreen(),
+        // '/syn':(context) => SynchronizationScreen(),
         '/home': (context) => HomeScreen(), // Task screen route
         // '/details': (context) => DetailsPage(apiData: [], data: Data(),),
         '/details': (context) => DetailsPage(apiData: [], initialPageIndex: 0),
