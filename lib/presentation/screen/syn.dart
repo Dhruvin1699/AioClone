@@ -43,8 +43,14 @@ class _SynchronizationScreenState extends State<SynchronizationScreen> {
   Future<void> syncData() async {
     try {
       // Fetch data using your ApiService
-      gridData = await ApiService.fetchDataFromApi(selectedFilterIds, gridData);
+      gridData = await ApiService.fetchDataFromApi(
+        selectedFilterIds,
+        // Provide appropriate values for pageKey and itemsPerPage
+        1,
+        10,
+        // Provide appropriate value for pa
 
+      );
       // Save the synced data to the local state
       setState(() {
         syncedData = gridData;

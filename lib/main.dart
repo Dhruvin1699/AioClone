@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomeScreen(), // Task screen route
         // '/details': (context) => DetailsPage(apiData: [], data: Data(),),
         '/details': (context) => DetailsPage(apiData: [], initialPageIndex: 0),
-        '/tasks':(context) => FilterPage()// Home screen route
+        '/tasks':(context) => FilterPage(selectedFilterIds: [],)// Home screen route
       },
     );
   }

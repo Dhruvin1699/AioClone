@@ -17,17 +17,6 @@ class DomainDatabase {
     );
   }
 
-  // static Future<void> insertDomain(String id, String domainName) async {
-  //   final Database db = await database;
-  //   await db.insert(
-  //     'domains',
-  //     {
-  //       'id': id,
-  //       'domainName': domainName,
-  //     },
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
   static Future<void> insertDomains(List<DomainData> domains) async {
     final Database db = await database;
     Batch batch = db.batch();

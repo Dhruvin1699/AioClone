@@ -40,7 +40,7 @@ class DatabaseHelper {
     await db.execute('''
     CREATE TABLE gridItems (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      projectName TEXT,
+      projectName TEXT ,
       imageMapping TEXT,
       techMapping TEXT,
       domainName TEXT,
@@ -51,31 +51,13 @@ class DatabaseHelper {
     )
   ''');
   }
-  // Future<void> saveDataToDatabase(Data data) async {
-  //   String techMappingJson = json.encode(data.techMapping);
-  //   String imageMappingJson = json.encode(data.imageMapping);
-  //
-  //   String? localImagePath = data.imageMapping != null && data.imageMapping!.isNotEmpty
-  //       ? data.imageMapping![0].localImagePath
-  //       : null;
-  //
-  //   Map<String, dynamic> row = {
-  //     'projectName': data.projectName,
-  //     'techMapping': techMappingJson,
-  //     'imageMapping': imageMappingJson,
-  //     'domainName': data.domainName,
-  //     'description': data.description,
-  //     'domainID': data.domainID,
-  //     'techID': (data.techMapping != null && data.techMapping!.isNotEmpty)
-  //         ? data.techMapping![0].techID
-  //         : null,
-  //     'localImagePath': localImagePath,
-  //   };
-  //
-  //   Database db = await instance.database;
-  //   await db.insert('gridItems', row,
-  //       conflictAlgorithm: ConflictAlgorithm.replace);
-  // }
+Future<List<Map<String, dynamic>>?> getPaginatedData(int limit, int offset) async {
+    return await _database?.rawQuery(
+      'SELECT * FROM gridItems LIMIT ? OFFSET ?',
+      [limit,offset]
+
+    );
+  }
 
   Future<void> saveDataToDatabase(Data data) async {
     // Convert techMapping list to JSON string
@@ -125,6 +107,8 @@ class DatabaseHelper {
       // To ignore, simply don't perform any action here
     }
   }
+
+
   Future<void> updateLocalImagePath(String projectName, String localImagePath) async {
     // Prepend the path to the existing localImagePath
     String fullPath = "/data/user/0/com.example.aioaapbardemo/app_flutter/$localImagePath";
@@ -170,7 +154,7 @@ class DatabaseHelper {
     return dataList;
   }
 
-
+  //
   Future<List<Data>> fetchDataByDomainAndTechID(
       String? domainID, String? techID) async {
     final db = await instance.database;
@@ -206,8 +190,11 @@ class DatabaseHelper {
           // Add other fields accordingly
         ));
       }
-
+      data.forEach((item) {
+        print('Fetched Data: $item');
+      });
       return data;
+
     } else if (domainID != null) {
       // Handle the case where only domain ID is provided
       final result = await db.rawQuery('''
@@ -229,7 +216,6 @@ class DatabaseHelper {
   }
 
 
-
   Future<void> initializeDatabase() async {
     _database = await _initDatabase();
   }
@@ -238,33 +224,11 @@ class DatabaseHelper {
     Database db = await instance.database;
     await db.insert('gridItems', row);
   }
-  // Future<void> insertData(Map<String, dynamic> row) async {
-  //   Database db = await instance.database;
-  //   await db.insert('gridItems', {
-  //     ...row,
-  //     'localImagePath': row['imageMapping'] != null
-  //         ? json.decode(row['imageMapping']).first['localImagePath']
-  //         : null,
-  //   });
-  // }
+
 
   Future<List<Map<String, dynamic>>> getAllGridItems() async {
     Database db = await instance.database;
     return await db.query('gridItems');
   }
 
-  // Future<void> saveFilterToDatabase(Filter filter) async {
-  //   Database db = await instance.database;
-  //   await db.insert('filters', filter.toMap(),
-  //       conflictAlgorithm: ConflictAlgorithm.replace);
-  // }
-  //
-  // Future<List<Filter>> getAllFilters() async {
-  //   Database db = await instance.database;
-  //   List<Map<String, dynamic>> maps = await db.query('filters');
-  //
-  //   return List.generate(maps.length, (index) {
-  //     return Filter.fromMap(maps[index]);
-  //   });
-  // }
-}
+  }

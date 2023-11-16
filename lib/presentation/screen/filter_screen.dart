@@ -9,18 +9,23 @@ import '../../model/domain.dart';
 import '../../model/tech.dart';
 
 class FilterPage extends StatefulWidget {
+  final List<String> selectedFilterIds;
+
+  const FilterPage({super.key, required this.selectedFilterIds});
   @override
   State<FilterPage> createState() => _FilterPageState();
 }
 
 class _FilterPageState extends State<FilterPage> {
   List<FilterItem> items = [];
+
   String selectedFilter = 'Domains/industries';
   List<String> item = ['Domains/industries', 'Technology/Tech Stack'];
 
   @override
   void initState() {
     super.initState();
+    print('id:${widget.selectedFilterIds}');
     // Fetch data when the screen initializes
     _loadData();
 
@@ -29,6 +34,7 @@ class _FilterPageState extends State<FilterPage> {
 
 
   static Future<List<DomainData>> fetchDomainItems() async {
+
     final response = await http
         .get(Uri.parse('https://api.tridhyatech.com/api/v1/lookup/domain'));
     if (response.statusCode == 200) {
@@ -65,7 +71,7 @@ class _FilterPageState extends State<FilterPage> {
       bool isConnected = connectivityResult != ConnectivityResult.none;
 
       if (isConnected) {
-        // Fetch data from API if there is an internet connection
+        // Fetch data from API if there is an internet cAonnection
         if (selectedFilter == 'Domains/industries') {
           List<DomainData> domainData = await fetchDomainItems();
           loadedItems = domainData
@@ -95,13 +101,15 @@ class _FilterPageState extends State<FilterPage> {
       setState(() {
         items = loadedItems;
       });
-      // setState(() {
-      //   items = loadedItems.map((item) {
-      //     // Update isSelected based on selectedFilterIds
-      //     item.isSelected = selectedFilterIds.contains(item.id);
-      //     return item;
-      //   }).toList();
-      // });
+      setState(() {
+        items = loadedItems.map((item) {
+          // Update isSelected based on selectedFilterIds
+          item.isSelected = widget.selectedFilterIds.contains(item.id);
+          return item;
+        }).toList();
+
+        print('Loaded Items: $loadedItems');
+      });
     } catch (error) {
       print('Error: $error');
       // Handle error, show a snackbar or display an error message on UI
@@ -180,6 +188,21 @@ class _FilterPageState extends State<FilterPage> {
                         ),
                       ),
                       Spacer(),
+                      TextButton(
+                        onPressed: () async {
+                          // Clear the selection of all items
+                          setState(() {
+                            items.forEach((item) {
+                              item.isSelected = false;
+                            });
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.transparent, // Set the background color as per your preference
+                        ),
+                        child: Text('Clear'),
+                      ),
+
 
                       ElevatedButton(
                         onPressed: () async {
@@ -189,13 +212,15 @@ class _FilterPageState extends State<FilterPage> {
                               .map((item) => item.id) // Extract IDs as strings
                               .toList();
 
+
+
                           // Close the filter page and pass the selectedItemsIds back to the home screen
+                          // Navigator.pop(context, selectedItemsIds);
                           Navigator.pop(context, selectedItemsIds);
 
                         },
                         child: Text('Apply'),
                       ),
-
                     ],
                   ),
                 ),

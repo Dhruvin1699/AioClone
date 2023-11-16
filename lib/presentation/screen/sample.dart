@@ -1355,3 +1355,57 @@ class FilterItem {
 //     );
 //   }
 // }
+///// offline
+// Future<void> loadGridItemsFromDatabase(int page) async {
+//   int offset = (page) * itemsPerPage;
+//   print("loadGridItemsFromDatabase page $page offset $offset");
+//   List<Map<String, dynamic>>? newdata =
+//   await _databaseHelper.getPaginatedData(itemsPerPage, offset);
+//
+//   List<Data> loadedData = [];
+//
+//   print("rows ${newdata?.length}");
+//
+//   for (var row in newdata!) {
+//     List<TechMapping> techMappingList =
+//     (json.decode(row['techMapping']) as List<dynamic>)
+//         .map((dynamic item) => TechMapping.fromJson(item))
+//         .toList();
+//
+//     var currentItem = Data(
+//       projectName: row['projectName'],
+//       imageMapping: (json.decode(row['imageMapping']) as List<dynamic>)
+//           .map((dynamic item) => ImageMapping.fromJson(item))
+//           .toList(),
+//       techMapping: techMappingList,
+//       domainName: row['domainName'],
+//       description: row['description'],
+//       formattedTechMapping:
+//       _databaseHelper.formatTechMapping(techMappingList),
+//       urlLink: row['urlLink'],
+//       domainID: row['domainID'],
+//     );
+//     await _setLocalPathsForImages(currentItem);
+//
+//     loadedData.add(currentItem);
+//   }
+//
+//   if (loadedData.length < itemsPerPage) {
+//     _pagingController.appendLastPage(loadedData);
+//   } else {
+//     final newPage = page + 1;
+//     _pagingController.appendPage(loadedData,newPage );
+//   }
+// }
+// void initState() {
+//   super.initState();
+//   // checkInternetConnection();
+//
+//   _pagingController.addPageRequestListener((pageKey) async{
+//     if (ConnectivityResult.none == await Connectivity().checkConnectivity()) {
+//       loadGridItemsFromDatabase(pageKey);
+//     } else {
+//       fetchDataFromApi(pageKey);
+//     }
+//   });
+// }

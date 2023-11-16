@@ -357,13 +357,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../model/model.dart';
 
 class DetailsPage extends StatefulWidget {
   final List<Data>? apiData;
   final int initialPageIndex;
 
-  DetailsPage({required this.apiData, required this.initialPageIndex});
+  DetailsPage({required this.apiData, required this.initialPageIndex,});
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -382,6 +383,7 @@ class _DetailsPageState extends State<DetailsPage> {
     _pageController = PageController(initialPage: widget.initialPageIndex);
     _updatePageContent(widget.initialPageIndex);
   }
+
 
   void _updatePageContent(int index) {
     setState(() {

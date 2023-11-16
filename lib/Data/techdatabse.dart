@@ -21,17 +21,7 @@ class TechDatabase {
     );
   }
 
-  // static Future<void> insertTech(String id, String techName) async {
-  //   final Database db = await database;
-  //   await db.insert(
-  //     'tech',
-  //     {
-  //       'id': id,
-  //       'techName': techName,
-  //     },
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
+
   static Future<void> insertTechStack(List<TechData> techStack) async {
     final Database db = await database;
     Batch batch = db.batch();
