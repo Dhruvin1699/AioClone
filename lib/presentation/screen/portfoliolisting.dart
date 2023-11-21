@@ -48,17 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
   }
-  //
-  // void initState() {
-  //   super.initState();
-  //   checkInternetConnection();
-  //
-  //   _pagingController.addPageRequestListener((pageKey) {
-  //     fetchDataFromApi(pageKey);
-  //   });
-  //
-  //
-  // }
 
   Future<void> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -95,48 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-//
-//   Future<void> loadGridItemsFromDatabase(int page) async {
-//   int offset = (page) * itemsPerPage;
-//   print("loadGridItemsFromDatabase page $page offset $offset");
-//   List<Map<String, dynamic>>? newdata =
-//   await _databaseHelper.getPaginatedData(itemsPerPage, offset);
-//
-//   List<Data> loadedData = [];
-//
-//   print("rows ${newdata?.length}");
-//
-//   for (var row in newdata!) {
-//     List<TechMapping> techMappingList =
-//     (json.decode(row['techMapping']) as List<dynamic>)
-//         .map((dynamic item) => TechMapping.fromJson(item))
-//         .toList();
-//
-//     var currentItem = Data(
-//       projectName: row['projectName'],
-//       imageMapping: (json.decode(row['imageMapping']) as List<dynamic>)
-//           .map((dynamic item) => ImageMapping.fromJson(item))
-//           .toList(),
-//       techMapping: techMappingList,
-//       domainName: row['domainName'],
-//       description: row['description'],
-//       formattedTechMapping:
-//       _databaseHelper.formatTechMapping(techMappingList),
-//       urlLink: row['urlLink'],
-//       domainID: row['domainID'],
-//     );
-//     await _setLocalPathsForImages(currentItem);
-//
-//     loadedData.add(currentItem);
-//   }
-//
-//   if (loadedData.length < itemsPerPage) {
-//     _pagingController.appendLastPage(loadedData);
-//   } else {
-//     final newPage = page + 1;
-//     _pagingController.appendPage(loadedData,newPage );
-//   }
-// }
+
   Future<void> loadGridItemsFromDatabase(int page) async {
     int offset = (page) * itemsPerPage;
     print("loadGridItemsFromDatabase page $page offset $offset");
@@ -268,67 +216,14 @@ class _HomeScreenState extends State<HomeScreen> {
           throw Exception('Failed to load data from API');
         }
       }
-    //
-    //   if (newData.isNotEmpty) {
-    //     // Increment page number only if new data is available
-    //     pageKey++;
-    //
-    //     for (var item in newData) {
-    //       await _databaseHelper.insertData({
-    //         'projectName': item.projectName,
-    //         'imageMapping': json.encode(item.imageMapping),
-    //         'techMapping': json.encode(item.techMapping),
-    //         'domainName': item.domainName,
-    //         'description': item.description,
-    //         'domainID': item.domainID,
-    //         'techID': (item.techMapping != null && item.techMapping!.isNotEmpty)
-    //             ? item.techMapping![0].techID
-    //             : null,
-    //       });
-    //       print(
-    //           'Data inserted into the database for projectName: ${item.projectName}');
-    //     }
-    //
-    //     _pagingController.appendPage(newData, pageKey);
-    //   } else {
-    //     _pagingController.appendLastPage([]);
-    //   }
-    // } catch (e) {
-    //   print('Error: $e');
-    //   await loadGridItemsFromDatabase(0);
-    // }
+
+
 
       if (newData.isNotEmpty) {
         // Increment page number only if new data is available
         pageKey++;
 
-        for (var item in newData) {
-          Database db = await _databaseHelper.database;
-          List<Map<String, dynamic>> existingData = await db.query(
-            'gridItems',
-            columns: ['projectName'],
-            where: 'projectName = ?',
-            whereArgs: [item.projectName],
-          );
-          if (existingData.isEmpty) {
-            // If data with the same projectName does not exist, insert the data into the database
-            await _databaseHelper.insertData({
-              'projectName': item.projectName,
-              'imageMapping': json.encode(item.imageMapping),
-              'techMapping': json.encode(item.techMapping),
-              'domainName': item.domainName,
-              'description': item.description,
-              'domainID': item.domainID,
-              'techID': (item.techMapping != null && item.techMapping!.isNotEmpty)
-                  ? item.techMapping![0].techID
-                  : null,
-            });
 
-            print('Data inserted into the database for projectName: ${item.projectName}');
-          } else {
-            print('Data already exists in the database for projectName: ${item.projectName}');
-          }
-        }
 
         _pagingController.appendPage(newData, pageKey);
       } else {
@@ -336,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       print('Error: $e');
-      await loadGridItemsFromDatabase(0);
+      await loadGridItemsFromDatabase(pageKey);
     }
   }
 
@@ -395,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: Image.asset(
                             'images/Group 29.png',
                             width: 150,
@@ -406,17 +301,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
-                        IconButton(
-                          icon: Container(
-                              width: 10, child: Icon(Icons.arrow_back_ios)),
-                          onPressed: () {
-                            // Handle back button press
-                          },
-                        ),
-                        SizedBox(width: 10),
+
+
                         Text(
                           'Work/Portfolio',
                           style: TextStyle(
@@ -440,25 +329,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Expanded(
-              child: PageGridViewBuilder<Data>(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PageGridViewBuilder<Data>(
             pagingController: _pagingController,
             itemBuilder: (context, item, index) {
-              var imagePath = item.imageMapping != null &&
-                      item.imageMapping!.isNotEmpty
-                  ? 'https://api.tridhyatech.com/${item.imageMapping![0].portfolioImage}'
-                  : '';
+                var imagePath = item.imageMapping != null &&
+                        item.imageMapping!.isNotEmpty
+                    ? 'https://api.tridhyatech.com/${item.imageMapping![0].portfolioImage}'
+                    : '';
 
-              return GridItem(
-                imagePath: imagePath,
-                itemName: item.projectName ?? " ",
-                apiData: item,
-                currentIndex: index,
-                onTap: () {
-                  _openDetailsPage(index);
-                },
-              );
+                return GridItem(
+                  imagePath: imagePath,
+                  itemName: item.projectName ?? " ",
+                  apiData: item,
+                  currentIndex: index,
+                  onTap: () {
+                    _openDetailsPage(index);
+                  },
+                );
             },
-          ))
+          ),
+              ))
         ],
       ),
     );
@@ -524,33 +416,38 @@ class GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.all(5.0),
-        child: Column(
-          children: <Widget>[
-            apiData != null &&
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: apiData != null &&
                     apiData!.imageMapping != null &&
                     apiData!.imageMapping!.isNotEmpty
-                ? buildImage(apiData!.imageMapping![0])
-                : Container(
-                    width: 185,
-                    height: 175,
-                    color: Colors.red,
-                  ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  itemName,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ? buildImage(apiData!.imageMapping![0])
+                    : Container(
+                  width: 185,
+                  height: 175,
+                  color: Colors.red,
                 ),
               ),
-            ),
-          ],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    itemName,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+
   }
 
   Widget buildImage(ImageMapping imageMapping) {

@@ -107,8 +107,6 @@ Future<List<Map<String, dynamic>>?> getPaginatedData(int limit, int offset) asyn
       // To ignore, simply don't perform any action here
     }
   }
-
-
   Future<void> updateLocalImagePath(String projectName, String localImagePath) async {
     // Prepend the path to the existing localImagePath
     String fullPath = "/data/user/0/com.example.aioaapbardemo/app_flutter/$localImagePath";
@@ -231,4 +229,5 @@ Future<List<Map<String, dynamic>>?> getPaginatedData(int limit, int offset) asyn
     return await db.query('gridItems');
   }
 
-  }
+
+}
